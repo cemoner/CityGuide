@@ -39,13 +39,7 @@ sealed class Destination(
         }
     }
 
-    data object Profile : Destination("profile", "userId") {
-        const val USER_ID_KEY = "userId"
-
-        operator fun invoke(userId: String): String =
-            route.appendParams(
-                USER_ID_KEY to userId,
-                )
+     object Profile : NoArgumentDestination("profile") {
     }
 }
 

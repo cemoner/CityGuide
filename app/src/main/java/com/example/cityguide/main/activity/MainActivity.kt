@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cityguide.feature.home.presentation.composable.HomeScreen
+import com.example.cityguide.feature.profile.presentation.composable.ProfileScreen
 import com.example.cityguide.main.viewmodel.MainViewModel
 import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.NavigationIntent
@@ -82,6 +83,7 @@ fun AppContent(
                 HomeScreen()
             }
             composable(destination = Destination.Profile) {
+                ProfileScreen()
             }
             composable(destination = Destination.Login) {
             }

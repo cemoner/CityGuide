@@ -21,7 +21,7 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = DarkTextColor,
-    onSurface = DarkTextColor,
+    onSurface = DarkSurfaceBackgroundColor,
 
     // Subtext and action colors
     onTertiary = DarkSubTextColor,
@@ -32,7 +32,7 @@ private val LightColorScheme = lightColorScheme(
 
     // Background and surface
     background = LightBackgroundColor,
-    surface = LightBackgroundColor,
+    surface = LightSurfaceBackgroundColor,
 
     // Text and content colors
     onPrimary = Color.White,

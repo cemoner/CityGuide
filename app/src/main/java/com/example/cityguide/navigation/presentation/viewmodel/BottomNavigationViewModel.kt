@@ -25,7 +25,7 @@ class BottomNavigationViewModel
                 }
                 "profile" -> {
                     if (IsLoggedInSingleton.getIsLoggedIn()) {
-                        navigationToProfileWithArg()
+                        navigationToProfileWith()
                     } else {
                         noArgNavigation(Destination.Login())
                     }
@@ -39,9 +39,9 @@ class BottomNavigationViewModel
             )
         }
 
-        private fun navigationToProfileWithArg() {
+        private fun navigationToProfileWith() {
             navigator.tryNavigateTo(
-                route = Destination.Profile("-1"),
+                route = Destination.Profile(),
                 popUpToRoute = Destination.Login(),
             )
         }
