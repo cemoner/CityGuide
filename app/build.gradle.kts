@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.accompanist.pager.indicators.v0301)
     implementation (libs.material3)
     implementation ("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation(libs.androidx.core.splashscreen)
 }
 kapt {
     correctErrorTypes = true
