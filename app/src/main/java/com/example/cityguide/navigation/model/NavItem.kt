@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -17,7 +18,7 @@ sealed class NavItem(
 ) {
     object Home : NavItem(Icons.Outlined.Home, Icons.Filled.Home, "Home")
 
-    object Map : NavItem(Icons.Outlined.Person, Icons.Filled.LocationCity, "Map")
+    object Map : NavItem(Icons.Outlined.LocationCity, Icons.Filled.LocationCity, "Map")
 
     object Favorites : NavItem(Icons.Outlined.Favorite, Icons.Filled.Favorite, "Favorites")
 

@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General App Strings -->
     <string name="app_name">Şehir Rehberi</string>
+
+    <!-- Sign In Strings -->
+    <string name="sign_in_header">Hesabınıza Giriş Yapın</string>
+    <string name="sign_in_sub_header">Uygulamaya devam edebilmek için giriş yapın</string>
+    <string name="enter_email">E-posta adresinizi giriniz</string>
+    <string name="enter_password">Parolanızı giriniz</string>
+    <string name="forgot_password">Şifremi unuttum?</string>
+    <string name="dont_have_account">Hesabınız yok mu?</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="connect_with">Veya sosyal medya ile bağlanın</string>
+
+    <!-- Sign Up Strings -->
+    <string name="sign_up_header">Hemen Kayıt Ol</string>
+    <string name="sign_up_sub_header">Lütfen bilgilerinizi doldurun ve hesap oluşturun</string>
+    <string name="enter_name">Adınızı girin</string>
+    <string name="password_requirement">Şifre en az 8 karakter olmalıdır</string>
+    <string name="already_have_account">Zaten bir hesabınız var mı?</string>
+    <string name="sign_in">Giriş Yap</string>
+
+    <!-- Forgot Password Strings -->
+    <string name="forgot_password_header">Şifremi Unuttum</string>
+    <string name="forgot_password_sub_header">Şifre sıfırlama bağlantısını almak için e-posta adresinizi girin</string>
+    <string name="reset_password">Şifreyi Sıfırla</string>
+
+    <!-- OTP Doğrulama Strings -->
+    <string name="verification_header">OTP Doğrulama</string>
+    <string name="verification_sub_header">OTP kodu için lütfen e-postanızı kontrol edin</string>
+    <string name="verification_code">OTP Kodu</string>"
+    <string name="verify">Doğrula</string>
+    <string name="resend_code">Kodu tekrar gönder</string>
+
+
 </resources>

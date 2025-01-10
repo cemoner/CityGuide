@@ -1,3 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General App Strings -->
     <string name="app_name">City Guide</string>
+
+    <!-- Sign In Strings -->
+    <string name="sign_in_header">Sign in now</string>
+    <string name="sign_in_sub_header">Please sign in to continue our app</string>
+    <string name="enter_email">Enter your email address</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="connect_with">Or connect with</string>
+
+    <!-- Sign Up Strings -->
+    <string name="sign_up_header">Sign up now</string>
+    <string name="sign_up_sub_header">Please fill the details and create account</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="password_requirement">Password must be at least 8 characters</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+
+    <!-- Forgot Password Strings -->
+    <string name="forgot_password_header">Forgot Password</string>
+    <string name="forgot_password_sub_header">Enter your email address to receive a reset password link</string>
+    <string name="reset_password">Reset Password</string>
+
+    <!-- OTP Verification Strings -->
+    <string name="verification_header">OTP Verification</string>
+    <string name="verification_sub_header">Please check your email for the OTP code</string>
+    <string name="verification_code">OTP Code</string>"
+    <string name="verify">Verify</string>
+    <string name="resend_code">Resend code</string>
 </resources>

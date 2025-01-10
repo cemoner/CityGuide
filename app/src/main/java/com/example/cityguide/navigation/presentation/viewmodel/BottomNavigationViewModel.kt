@@ -1,7 +1,7 @@
 package com.example.cityguide.navigation.presentation.viewmodel
 
+import ProfileUrlSingleton
 import androidx.lifecycle.ViewModel
-import com.example.cityguide.main.util.IsLoggedInSingleton
 import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +24,7 @@ class BottomNavigationViewModel
                     noArgNavigation(Destination.Favorites())
                 }
                 "profile" -> {
-                    if (IsLoggedInSingleton.getIsLoggedIn()) {
-                        navigationToProfileWith()
-                    } else {
-                        noArgNavigation(Destination.Login())
-                    }
+                    navigationToProfileWithArg()
                 }
             }
         }
@@ -39,10 +35,10 @@ class BottomNavigationViewModel
             )
         }
 
-        private fun navigationToProfileWith() {
+        private fun navigationToProfileWithArg() {
             navigator.tryNavigateTo(
-                route = Destination.Profile(),
-                popUpToRoute = Destination.Login(),
+                route = Destination.Profile(ProfileUrlSingleton.getUrl),
+                popUpToRoute = Destination.SignIn(),
             )
         }
     }

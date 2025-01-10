@@ -22,7 +22,7 @@ fun NavigationBar(navController: NavHostController) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         items.forEach { item ->
             NavigationBarItem(
                 icon = {

@@ -13,36 +13,22 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimaryBlue,
-
     background = DarkBackgroundColor,
-    surface = DarkBackgroundColor,
-
-    // Text and content colors
-    onPrimary = Color.Black,
-    onSecondary = Color.Black,
+    surface = DarkSurfaceBackgroundColor,
+    onPrimary = Color.White,
     onBackground = DarkTextColor,
-    onSurface = DarkSurfaceBackgroundColor,
-
-    // Subtext and action colors
-    onTertiary = DarkSubTextColor,
-    onError = Color.Black
+    onSurface = DarkTextColor,
+    onTertiary = DarkSubTextColor
 )
+
 private val LightColorScheme = lightColorScheme(
     primary = MyPrimaryBlue,
-
-    // Background and surface
     background = LightBackgroundColor,
     surface = LightSurfaceBackgroundColor,
-
-    // Text and content colors
     onPrimary = Color.White,
-    onSecondary = Color.White,
     onBackground = LightTextColor,
     onSurface = LightTextColor,
-
-    // Subtext and action colors
-    onTertiary = LightSubTextColor,
-    onError = Color.White,
+    onTertiary = LightSubTextColor
 )
 
 @Composable
@@ -56,7 +42,6 @@ fun CityGuideTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

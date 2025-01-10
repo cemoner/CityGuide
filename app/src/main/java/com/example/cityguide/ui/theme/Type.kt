@@ -4,8 +4,8 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.cityguide.R
 
@@ -29,7 +29,7 @@ val Typography = Typography(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 16.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
@@ -49,28 +49,28 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
+        fontSize = 24.sp, // Increased to match the design
+        lineHeight = 34.sp,
         letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
         fontFamily = robotoFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     titleSmall = TextStyle(
         fontFamily = robotoFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp
     ),
     labelSmall = TextStyle(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
+        fontSize = 10.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),

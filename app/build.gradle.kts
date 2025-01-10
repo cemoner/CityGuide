@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,6 +100,14 @@ dependencies {
     implementation (libs.material3)
     implementation ("androidx.compose.material3:material3-window-size-class:1.3.1")
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.material3)
+    implementation( libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.firebase.auth)
+    implementation(libs.coil.kt.coil.compose)
+
+
+
 }
 kapt {
     correctErrorTypes = true
