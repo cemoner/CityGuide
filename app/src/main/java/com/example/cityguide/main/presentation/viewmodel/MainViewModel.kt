@@ -18,6 +18,9 @@ import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,13 +38,15 @@ constructor(
     val navigationChannel = appNavigator.navigationChannel
 
 
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
     init {
         viewModelScope.launch {
             if (isNetworkAvailable()){
                 if (isUserLoggedIn()) {
                     updateUiState(UiState.Success(true))
                     handleLoggedInUser()
-                    return@launch
                 }
                 else {
                     updateUiState(UiState.Success(false))
@@ -50,6 +55,7 @@ constructor(
             else {
                 updateUiState(UiState.Error("No internet connection"))
             }
+            _isInitialized.value = true
         }
     }
 
@@ -59,10 +65,7 @@ constructor(
         }
     }
 
-    fun isStateLoading():Boolean {
-        return uiState.value is UiState.Loading
-    }
-
+    
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork

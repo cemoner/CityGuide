@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         installSplashScreen().apply {
             this.setKeepOnScreenCondition {
-                mainViewModel.isStateLoading()
+                !mainViewModel.isInitialized.value
             }
         }
         super.onCreate(savedInstanceState)
