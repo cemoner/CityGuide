@@ -106,11 +106,11 @@ fun AppContent(
             Scaffold(
                 topBar =
                 {
-                    DynamicTopBar(navController = navController,navigator)
+                    DynamicTopBar(navController = navController, appNavigator = navigator)
                 },
 
                 bottomBar = {
-                    NavigationBar(navController = navController)
+                    DynamicBottomBar(navController = navController, appNavigator = navigator)
                 },
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding(),
             ) { innerPadding ->
@@ -167,10 +167,37 @@ fun DynamicTopBar(navController: NavHostController,appNavigator: AppNavigator) {
             TopBarHome(appNavigator)
         }
         Destination.Profile.fullRoute -> {
+            TopBarHome(appNavigator)
+        }
+        Destination.SignIn() -> {
 
         }
         else -> {
             TopBar(appNavigator)
+        }
+    }
+}
+
+@Composable
+fun DynamicBottomBar(navController: NavHostController,appNavigator: AppNavigator){
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination?.route
+
+    when (currentDestination) {
+        Destination.Home() -> {
+            NavigationBar(navController = navController)
+        }
+        Destination.Profile.fullRoute -> {
+            NavigationBar(navController = navController)
+        }
+        Destination.Map.fullRoute -> {
+            NavigationBar(navController = navController)
+        }
+        Destination.Favorites.fullRoute -> {
+            NavigationBar(navController = navController)
+        }
+        else -> {
+
         }
     }
 }

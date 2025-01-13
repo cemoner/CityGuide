@@ -10,4 +10,6 @@ class UserInfoRepositoryImpl @Inject constructor(
     override suspend fun getProfileUrl(): String = firebaseAuth.currentUser?.photoUrl.toString()
 
     override suspend fun getProfileName(): String = firebaseAuth.currentUser?.displayName.toString()
+
+    override fun isUserLoggedIn():Boolean = firebaseAuth.currentUser != null
 }

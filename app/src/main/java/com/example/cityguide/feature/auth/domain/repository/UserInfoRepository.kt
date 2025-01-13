@@ -4,4 +4,6 @@ interface UserInfoRepository {
     suspend fun getProfileUrl(): String
 
     suspend fun getProfileName(): String
+
+    fun isUserLoggedIn():Boolean
 }

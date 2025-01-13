@@ -68,7 +68,7 @@ class SignUpViewModel
             val result = signUpUseCase(currentState.name,currentState.email,currentState.password)
             result.onSuccess {
                 onCreateToast("Account created successfully! Taking you to the login page...")
-                delay(1000)
+                delay(500)
                 tryNavigateTo(Destination.SignIn())
             }
             result.onFailure {

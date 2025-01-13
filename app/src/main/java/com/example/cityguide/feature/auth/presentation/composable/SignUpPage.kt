@@ -105,7 +105,7 @@ fun SignUpContent(uiState: UiState,
                         ) {
                             AuthTextLink(
                                 stringResource(id = R.string.already_have_account),
-                                stringResource(id = R.string.sign_up),
+                                stringResource(id = R.string.sign_in),
                                 { onAction(UiAction.OnSignInClick) }
                             )
                         }
@@ -118,10 +118,6 @@ fun SignUpContent(uiState: UiState,
                             modifier = Modifier.fillMaxWidth().padding(4.dp)
                         ) {
                             SocialMediaButton("google", {}, R.drawable.google_icon_logo)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            SocialMediaButton("facebook", {}, R.drawable.facebook_icon_logo)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            SocialMediaButton("twitter", {}, R.drawable.twitter_icon_logo)
                         }
                     }
                 }

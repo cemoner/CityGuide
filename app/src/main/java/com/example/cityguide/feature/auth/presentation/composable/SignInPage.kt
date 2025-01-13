@@ -72,7 +72,7 @@ fun SignInContent(uiState: UiState,
             }
             is UiState.Success -> {
                 Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-                    Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 48.dp).fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
+                    Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 128.dp).fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
                         AuthHeader(
                             stringResource(id = R.string.sign_in_header),
                             stringResource(id = R.string.sign_in_sub_header)
@@ -110,10 +110,6 @@ fun SignInContent(uiState: UiState,
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,modifier = Modifier.fillMaxWidth().padding(4.dp)){
                             SocialMediaButton("google", {}, R.drawable.google_icon_logo)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            SocialMediaButton("facebook", {}, R.drawable.facebook_icon_logo)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            SocialMediaButton("twitter", {}, R.drawable.twitter_icon_logo)
                         }
                     }
                 }

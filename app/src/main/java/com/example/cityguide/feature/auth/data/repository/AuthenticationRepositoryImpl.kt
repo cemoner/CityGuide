@@ -44,5 +44,12 @@ class AuthenticationRepositoryImpl
         }
     }
 
-    override fun isUserLoggedIn():Boolean = firebaseAuth.currentUser != null
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
+        return try {
+            firebaseAuth.sendPasswordResetEmail(email).await()
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
 }

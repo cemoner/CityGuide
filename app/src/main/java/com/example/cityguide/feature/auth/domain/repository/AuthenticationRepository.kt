@@ -8,6 +8,6 @@ interface AuthenticationRepository {
 
     suspend fun signInWithEmailAndPassword(email: String, password: String): Result<FirebaseUser>
 
-    fun isUserLoggedIn():Boolean
+    suspend fun sendPasswordResetEmail(email:String):Result<Unit>
 
 }

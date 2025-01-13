@@ -56,7 +56,7 @@ fun ForgotPasswordContent(uiState: UiState,
                             false
                         )
                         Spacer(modifier = Modifier.height(24.dp))
-                        AuthButton(stringResource(id = R.string.reset_password), {onAction(UiAction.OnResetPasswordCLick)})
+                        AuthButton(stringResource(id = R.string.reset_password)) { onAction(UiAction.OnResetPasswordCLick) }
                     }
                 }
             }

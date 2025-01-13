@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cityguide.feature.auth.domain.usecase.ForgotPasswordUseCase
 import com.example.cityguide.feature.auth.presentation.contract.ForgotPasswordContract.SideEffect
 import com.example.cityguide.feature.auth.presentation.contract.ForgotPasswordContract.UiAction
 import com.example.cityguide.feature.auth.presentation.contract.ForgotPasswordContract.UiState
@@ -14,6 +15,7 @@ import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class ForgotPasswordViewModel
 @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val forgotPasswordUseCase: ForgotPasswordUseCase,
     private val appNavigator: AppNavigator
 )
     :ViewModel(), MVI<UiState, UiAction, SideEffect> by mvi(initialUiState())
@@ -40,7 +43,30 @@ class ForgotPasswordViewModel
     override fun onAction(action: UiAction) {
         when(action){
             is UiAction.OnEmailChange -> onEmailChange(action.email)
-            is UiAction.OnResetPasswordCLick -> TODO()
+            is UiAction.OnResetPasswordCLick -> onResetPasswordClick()
+        }
+    }
+
+    private fun onResetPasswordClick(){
+        val currentState = (uiState.value) as? UiState.Success ?: return
+        viewModelScope.launch {
+            val result = forgotPasswordUseCase(currentState.email)
+            result.onSuccess {
+                delay(500)
+                onCreateToast("Password reset email sent successfully!")
+                tryNavigateTo(Destination.SignIn())
+                updateUiState(UiState.Success(""))
+            }
+            result.onFailure {
+                onCreateToast("Something is Wrong")
+                updateUiState(UiState.Success(""))
+            }
+        }
+    }
+
+    private fun onCreateToast(message: String) {
+        viewModelScope.launch {
+            emitSideEffect(SideEffect.ShowToast(message))
         }
     }
 

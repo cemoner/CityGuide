@@ -1,6 +1,7 @@
 package com.example.cityguide.feature.auth.presentation.contract
 
 
+
 sealed interface ForgotPasswordContract {
     sealed interface UiState{
         object Loading:UiState
@@ -13,6 +14,8 @@ sealed interface ForgotPasswordContract {
 
     }
     sealed interface SideEffect{
-
+        data class ShowToast(
+            val message: String,
+        ) : SideEffect
     }
 }
