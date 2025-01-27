@@ -33,5 +33,14 @@
     <string name="verify">Verifizieren</string>
     <string name="resend_code">Code erneut senden</string>
 
+    <!-- Edit Profile Strings -->
+    <string name="first_name">Vorname</string>
+    <string name="last_name">Nachname</string>
+    <string name="phone_number">Geben Sie eine Telefonnummer ein</string>
+
+
+    <!-- Profile Strings -->
+    <string name="favorites">Favoriten</string>
+    <string name="logout">Ausloggen</string>
 
 </resources>

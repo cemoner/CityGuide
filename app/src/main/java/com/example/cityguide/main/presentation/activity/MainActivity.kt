@@ -1,22 +1,29 @@
 package com.example.cityguide.main.presentation.activity
 
+import DynamicBottomBar
+import DynamicTopBar
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -24,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cityguide.feature.auth.domain.usecase.SignOutUseCase
 import com.example.cityguide.feature.auth.presentation.component.TopBar
 import com.example.cityguide.feature.auth.presentation.composable.ForgotPasswordScreen
 import com.example.cityguide.feature.auth.presentation.composable.OTPVerificationScreen
@@ -31,9 +39,10 @@ import com.example.cityguide.feature.auth.presentation.composable.SignInScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignUpScreen
 import com.example.cityguide.feature.home.presentation.component.TopBarHome
 import com.example.cityguide.feature.home.presentation.composable.HomeScreen
-import com.example.cityguide.feature.home.presentation.viewmodel.HomePageViewModel
 import com.example.cityguide.feature.map.presentation.MapScreen
 import com.example.cityguide.feature.profile.presentation.composable.ProfileScreen
+import com.example.cityguide.feature.profile.presentation.contract.ProfilePageContract
+import com.example.cityguide.feature.profile.presentation.viewmodel.ProfilePageViewModel
 import com.example.cityguide.main.presentation.contract.MainContract.SideEffect
 import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
@@ -50,9 +59,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var signOutUseCase: SignOutUseCase
+
+
     private val mainViewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
@@ -64,8 +79,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             CityGuideTheme {
-                AppScreen()
+                AppScreen(navController)
             }
         }
     }
@@ -73,14 +89,14 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun AppScreen(){
+fun AppScreen(navController: NavHostController){
     val viewModel: MainViewModel = hiltViewModel<MainViewModel>()
     val (uiState,onAction,sideEffect) = viewModel.unpack()
     Box(modifier = Modifier
         .systemBarsPadding()
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)){
-        AppContent(viewModel,uiState,onAction,sideEffect,viewModel.appNavigator)
+        AppContent(viewModel,uiState,onAction,sideEffect,viewModel.appNavigator,navController)
     }
 }
 
@@ -91,13 +107,26 @@ fun AppContent(
     uiState: UiState,
     onAction: (UiAction) -> Unit,
     sideEffect: Flow<SideEffect>,
-    navigator: AppNavigator
+    navigator: AppNavigator,
+    navController: NavHostController
 ) {
+    val isInitialized by viewModel.isInitialized.collectAsState()
+    LaunchedEffect(isInitialized) {
+        if (!isInitialized) {
+            viewModel.markInitializationComplete()
+        }
+    }
+    val profileViewModel: ProfilePageViewModel = hiltViewModel()
+    val (profileUiState,profileOnAction,profileSideEffect) = profileViewModel.unpack()
+
     when(uiState){
         is UiState.Error -> TODO()
-        is UiState.Loading -> TODO()
+        is UiState.Loading -> {
+            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+            }
+        }
         is UiState.Success -> {
-            val navController = rememberNavController()
             NavigationEffects(
                 navigationChannel = viewModel.navigationChannel,
                 navHostController = navController,
@@ -106,11 +135,11 @@ fun AppContent(
             Scaffold(
                 topBar =
                 {
-                    DynamicTopBar(navController = navController, appNavigator = navigator)
+                    DynamicTopBar(navController = navController, appNavigator = navigator,profileUiState,profileOnAction)
                 },
 
                 bottomBar = {
-                    DynamicBottomBar(navController = navController, appNavigator = navigator)
+                    DynamicBottomBar(navController = navController)
                 },
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding(),
             ) { innerPadding ->
@@ -124,7 +153,7 @@ fun AppContent(
                         HomeScreen()
                     }
                     composable(destination = Destination.Profile) {
-                        ProfileScreen()
+                        ProfileScreen(profileUiState,profileOnAction,profileSideEffect,profileViewModel)
                     }
                     composable(destination = Destination.SignIn) {
                         SignInScreen()
@@ -137,71 +166,14 @@ fun AppContent(
                         ForgotPasswordScreen()
                     }
 
-                    composable(destination = Destination.Verification) {
-                        OTPVerificationScreen()
-                    }
-
-                    composable(destination = Destination.Map) {
-                        MapScreen()
-                    }
-
                     composable(destination = Destination.Favorites) {
                     }
 
-                    composable(destination = Destination.LocationDetail) {
-                    }
                 }
             }
         }
     }
 }
-
-
-@Composable
-fun DynamicTopBar(navController: NavHostController,appNavigator: AppNavigator) {
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStackEntry?.destination?.route
-
-    when (currentDestination) {
-        Destination.Home() -> {
-            TopBarHome(appNavigator)
-        }
-        Destination.Profile.fullRoute -> {
-            TopBarHome(appNavigator)
-        }
-        Destination.SignIn() -> {
-
-        }
-        else -> {
-            TopBar(appNavigator)
-        }
-    }
-}
-
-@Composable
-fun DynamicBottomBar(navController: NavHostController,appNavigator: AppNavigator){
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStackEntry?.destination?.route
-
-    when (currentDestination) {
-        Destination.Home() -> {
-            NavigationBar(navController = navController)
-        }
-        Destination.Profile.fullRoute -> {
-            NavigationBar(navController = navController)
-        }
-        Destination.Map.fullRoute -> {
-            NavigationBar(navController = navController)
-        }
-        Destination.Favorites.fullRoute -> {
-            NavigationBar(navController = navController)
-        }
-        else -> {
-
-        }
-    }
-}
-
 
 @Composable
 fun NavigationEffects(
@@ -236,7 +208,9 @@ fun NavigationEffects(
                 }
                 is NavigationIntent.ClearBackStack -> {
                     navHostController.popBackStack(navHostController.graph.id, false)
-                    navHostController.navigate(Destination.Home())
+                    navHostController.navigate(Destination.SignIn()){
+                        launchSingleTop
+                    }
                 }
             }
         }

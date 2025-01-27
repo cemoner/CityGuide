@@ -24,7 +24,7 @@
     <!-- Forgot Password Strings -->
     <string name="forgot_password_header">Şifremi Unuttum</string>
     <string name="forgot_password_sub_header">Şifre sıfırlama bağlantısını almak için e-posta adresinizi girin</string>
-    <string name="reset_password">Şifreyi Sıfırla</string>
+    <string name="reset_password">Şifremi Sıfırla</string>
 
     <!-- OTP Doğrulama Strings -->
     <string name="verification_header">OTP Doğrulama</string>
@@ -32,6 +32,16 @@
     <string name="verification_code">OTP Kodu</string>"
     <string name="verify">Doğrula</string>
     <string name="resend_code">Kodu tekrar gönder</string>
+
+
+    <!-- Edit Profile Strings -->
+    <string name="first_name">İsim</string>
+    <string name="last_name">Soyisim</string>
+    <string name="phone_number">Telefon Numarası giriniz</string>
+
+    <!-- Profile Strings -->
+    <string name="favorites">Favoriler</string>
+    <string name="logout">Çıkış Yap</string>
 
 
 </resources>

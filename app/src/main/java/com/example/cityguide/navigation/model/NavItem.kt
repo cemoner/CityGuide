@@ -16,13 +16,13 @@ sealed class NavItem(
     val selectedIcon: ImageVector,
     val label: String,
 ) {
-    object Home : NavItem(Icons.Outlined.Home, Icons.Filled.Home, "Home")
+    object Home : NavItem(Icons.Outlined.Home, Icons.Filled.Home, "home")
 
-    object Map : NavItem(Icons.Outlined.LocationCity, Icons.Filled.LocationCity, "Map")
+    object Map : NavItem(Icons.Outlined.LocationCity, Icons.Filled.LocationCity, "map")
 
-    object Favorites : NavItem(Icons.Outlined.Favorite, Icons.Filled.Favorite, "Favorites")
+    object Favorites : NavItem(Icons.Outlined.Favorite, Icons.Filled.Favorite, "favorites")
 
-    object Profile : NavItem(Icons.Outlined.Person, Icons.Filled.Person, "Profile")
+    object Profile : NavItem(Icons.Outlined.Person, Icons.Filled.Person, "profile")
 
 
     companion object {

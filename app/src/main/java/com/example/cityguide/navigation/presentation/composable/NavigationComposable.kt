@@ -1,6 +1,5 @@
 package com.example.cityguide.navigation.presentation.composable
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NamedNavArgument
@@ -31,11 +30,11 @@ fun NavHost(
 fun NavGraphBuilder.composable(
     destination: Destination,
     arguments: List<NamedNavArgument> = emptyList(),
-    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
+    content: @Composable (NavBackStackEntry) -> Unit,
 ) {
     composable(
         route = destination.fullRoute,
         arguments = arguments,
-        content = content,
+        content = { backStackEntry -> content(backStackEntry) }
     )
 }

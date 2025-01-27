@@ -1,14 +1,12 @@
-import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 object ProfileNameSingleton {
+    private val _profileName = MutableStateFlow("")
 
-    private val _profileName = mutableStateOf("")
+    val profileName: StateFlow<String> get() = _profileName
 
-    val getName: String
-        get() = _profileName.value
-
-
-    fun setName(url: String) {
-        _profileName.value = url
+    fun setName(name: String) {
+        _profileName.value = name
     }
 }

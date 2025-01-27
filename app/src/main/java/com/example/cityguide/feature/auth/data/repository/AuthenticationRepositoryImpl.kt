@@ -3,6 +3,7 @@ package com.example.cityguide.feature.auth.data.repository
 import com.example.cityguide.feature.auth.domain.repository.AuthenticationRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -52,4 +53,5 @@ class AuthenticationRepositoryImpl
             Result.failure(exception)
         }
     }
+
 }

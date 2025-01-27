@@ -5,16 +5,17 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cityguide.feature.auth.domain.usecase.GetEmailUseCase
 import com.example.cityguide.feature.auth.domain.usecase.GetProfileNameUseCase
 import com.example.cityguide.feature.auth.domain.usecase.GetProfileUrlUseCase
 import com.example.cityguide.feature.auth.domain.usecase.IsUserLoggedInUseCase
-import com.example.cityguide.feature.auth.presentation.contract.SignInContract
 import com.example.cityguide.main.presentation.contract.MainContract.SideEffect
 import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
+import com.example.cityguide.main.util.ProfileEmailSingleton
+import com.example.cityguide.main.util.ProfilePhoneNumberSingleton
 import com.example.cityguide.mvi.MVI
 import com.example.cityguide.mvi.mvi
-import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,7 +33,8 @@ constructor(
     val appNavigator: AppNavigator,
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val getProfileUrlUseCase: GetProfileUrlUseCase,
-    private val getProfileNameUseCase: GetProfileNameUseCase
+    private val getProfileNameUseCase: GetProfileNameUseCase,
+    private val getEmailUseCase: GetEmailUseCase
 ) : ViewModel(),
     MVI<UiState, UiAction, SideEffect> by mvi(initialUiState()) {
     val navigationChannel = appNavigator.navigationChannel
@@ -55,7 +57,6 @@ constructor(
             else {
                 updateUiState(UiState.Error("No internet connection"))
             }
-            _isInitialized.value = true
         }
     }
 
@@ -65,6 +66,9 @@ constructor(
         }
     }
 
+    fun markInitializationComplete() {
+        _isInitialized.value = true
+    }
     
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -72,17 +76,24 @@ constructor(
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         return networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
-    suspend fun isUserLoggedIn():Boolean{
+    private fun isUserLoggedIn():Boolean{
         return isUserLoggedInUseCase()
     }
 
-    private suspend fun handleLoggedInUser(){
+    private suspend fun handleLoggedInUser() {
         val profileUrl = getProfileUrlUseCase()
-        ProfileUrlSingleton.setUrl(profileUrl)
+        println("Profile URL: $profileUrl") // Debugging log
+        ProfileImageUrlSingleton.setProfileImageUrl(profileUrl)
+
         val profileName = getProfileNameUseCase()
+        println("Profile Name: $profileName") // Debugging log
         ProfileNameSingleton.setName(profileName)
 
+        val email = getEmailUseCase()
+        println("Profile Email: $email") // Debugging log
+        ProfileEmailSingleton.setEmail(email)
     }
+
 
     private fun tryNavigateTo(destination:String){
         viewModelScope.launch {

@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +37,11 @@ fun ForgotPasswordScreen(){
 fun ForgotPasswordContent(uiState: UiState,
                            onAction: (UiAction) -> Unit,
                            sideEffect: Flow<SideEffect>){
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val padding = (screenWidth * 0.04f)
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -43,20 +50,20 @@ fun ForgotPasswordContent(uiState: UiState,
             UiState.Loading -> TODO()
             is UiState.Success -> {
                 Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-                    Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 48.dp).fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
-                        AuthHeader(
+                    LazyColumn(modifier = Modifier.padding(padding, padding).fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Center) {
+                        item{AuthHeader(
                             stringResource(id = R.string.forgot_password_header),
                             stringResource(id = R.string.forgot_password_sub_header)
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        AuthInputField(
+                        )}
+                        item{Spacer(modifier = Modifier.height(24.dp))}
+                        item{AuthInputField(
                             stringResource(id = R.string.enter_email),
                             uiState.email,
                             {onAction(UiAction.OnEmailChange(it))},
                             false
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        AuthButton(stringResource(id = R.string.reset_password)) { onAction(UiAction.OnResetPasswordCLick) }
+                        )}
+                        item{Spacer(modifier = Modifier.height(24.dp))}
+                        item{AuthButton(stringResource(id = R.string.reset_password)) { onAction(UiAction.OnResetPasswordCLick) }}
                     }
                 }
             }

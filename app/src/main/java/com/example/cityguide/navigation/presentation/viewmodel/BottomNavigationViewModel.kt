@@ -1,6 +1,5 @@
 package com.example.cityguide.navigation.presentation.viewmodel
 
-import ProfileUrlSingleton
 import androidx.lifecycle.ViewModel
 import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
@@ -24,7 +23,7 @@ class BottomNavigationViewModel
                     noArgNavigation(Destination.Favorites())
                 }
                 "profile" -> {
-                    navigationToProfileWithArg()
+                   noArgNavigation(Destination.Profile())
                 }
             }
         }
@@ -32,13 +31,6 @@ class BottomNavigationViewModel
         private fun noArgNavigation(destination: String) {
             navigator.tryNavigateTo(
                 destination,
-            )
-        }
-
-        private fun navigationToProfileWithArg() {
-            navigator.tryNavigateTo(
-                route = Destination.Profile(ProfileUrlSingleton.getUrl),
-                popUpToRoute = Destination.SignIn(),
             )
         }
     }

@@ -1,9 +1,14 @@
 package com.example.cityguide.feature.auth.presentation.contract
 
+import android.content.IntentSender
+
 sealed interface SignInContract {
     sealed interface UiState{
         object Loading:UiState
-        data class Success(val email: String,val password: String):UiState
+        data class Success(
+            val email: String,
+            val password: String,
+        ):UiState
         data class Error(val message:String):UiState
     }
     sealed interface UiAction{
@@ -19,5 +24,6 @@ sealed interface SignInContract {
         data class ShowToast(
             val message: String,
         ) : SideEffect
+        data class LaunchGoogleSignIn(val intentSender: IntentSender) : SideEffect
     }
 }

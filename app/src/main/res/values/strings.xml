@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="default_web_client_id">597301606083-nok21ih1vdngfec1f9a700uf8hnbml5f.apps.googleusercontent.com</string>
+
     <!-- General App Strings -->
     <string name="app_name">City Guide</string>
 
@@ -32,4 +35,15 @@
     <string name="verification_code">OTP Code</string>"
     <string name="verify">Verify</string>
     <string name="resend_code">Resend code</string>
+
+
+    <!-- Edit Profile Strings -->
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Enter a Phone Number</string>
+
+    <!-- Profile Strings -->
+    <string name="favorites">Favorites</string>
+    <string name="logout">Log out</string>
+
 </resources>
