@@ -2,12 +2,25 @@ package com.example.cityguide.main.presentation.activity
 
 import DynamicBottomBar
 import DynamicTopBar
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,55 +39,85 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.cityguide.feature.auth.domain.usecase.SignOutUseCase
-import com.example.cityguide.feature.auth.presentation.component.TopBar
 import com.example.cityguide.feature.auth.presentation.composable.ForgotPasswordScreen
-import com.example.cityguide.feature.auth.presentation.composable.OTPVerificationScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignInScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignUpScreen
-import com.example.cityguide.feature.home.presentation.component.TopBarHome
 import com.example.cityguide.feature.home.presentation.composable.HomeScreen
-import com.example.cityguide.feature.map.presentation.MapScreen
 import com.example.cityguide.feature.profile.presentation.composable.ProfileScreen
-import com.example.cityguide.feature.profile.presentation.contract.ProfilePageContract
 import com.example.cityguide.feature.profile.presentation.viewmodel.ProfilePageViewModel
+import com.example.cityguide.main.util.LocationException
 import com.example.cityguide.main.presentation.contract.MainContract.SideEffect
 import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
 import com.example.cityguide.main.presentation.viewmodel.MainViewModel
+import com.example.cityguide.main.util.hasLocationPermission
 import com.example.cityguide.mvi.unpack
 import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import com.example.cityguide.navigation.navigator.NavigationIntent
 import com.example.cityguide.navigation.presentation.composable.NavHost
-import com.example.cityguide.navigation.presentation.composable.NavigationBar
 import com.example.cityguide.navigation.presentation.composable.composable
 import com.example.cityguide.ui.theme.CityGuideTheme
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
-import javax.inject.Inject
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var signOutUseCase: SignOutUseCase
+
+    private var context = this
+
+    private val fusedLocationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private var isDialogShown = false
+
+
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
 
     private val mainViewModel: MainViewModel by viewModels()
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                fetchLocationAndSetCity()
+            } else {
+                requestLocationPermission()
+            }
+        }
         window.setBackgroundDrawableResource(android.R.color.transparent)
         installSplashScreen().apply {
             this.setKeepOnScreenCondition {
                 !mainViewModel.isInitialized.value
             }
+        }
+        if(!context.hasLocationPermission()){
+            requestLocationPermission()
+        }
+        else {
+            fetchLocationAndSetCity()
         }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -85,8 +128,135 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
+    private suspend fun getCityName(latitude: Double, longitude: Double): String? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            suspendCancellableCoroutine { continuation ->
+                val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
+                if (Geocoder.isPresent()) {
+                    geocoder.getFromLocation(
+                        latitude,
+                        longitude,
+                        1,
+                        object : Geocoder.GeocodeListener {
+                            override fun onGeocode(addresses: List<android.location.Address>) {
+                                val city = addresses.firstOrNull()?.locality
+                                    ?: addresses.firstOrNull()?.adminArea
+                                continuation.resume(city)
+                            }
 
+                            override fun onError(errorMessage: String?) {
+                                continuation.resumeWithException(
+                                    RuntimeException(errorMessage ?: "Unknown geocoding error")
+                                )
+                            }
+                        }
+                    )
+                } else {
+                    continuation.resumeWithException(RuntimeException("Geocoder is not present on this device."))
+                }
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
+                try {
+                    val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                    val city = addresses?.firstOrNull()?.locality
+                        ?: addresses?.firstOrNull()?.adminArea // Fallback to adminArea if locality is null
+                    city
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun fetchLocationAndSetCity() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    lifecycleScope.launch {
+                        val cityName = getCityName(it.latitude, it.longitude)
+                        Log.d("MainActivity","Coordinates: ${it.latitude}, ${it.longitude}")
+                        Log.d("MainActivity", "City: $cityName")
+                        Toast.makeText(this@MainActivity, "City: $cityName", Toast.LENGTH_LONG).show()
+                    }
+                } ?: run {
+                    Log.e("MainActivity", "Location unavailable")
+                    throw LocationException("Location Unavailable")
+                }
+            }
+            .addOnFailureListener {
+                Log.e("MainActivity", "Failed to fetch location: ${it.message}")
+                throw it
+            }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        // If permission is granted, don't show any dialog
+        if (hasLocationPermission()) {
+            fetchLocationAndSetCity()
+        } else {
+            // Only show the "Go to Settings" dialog if permission is still not granted
+            if (!isDialogShown) {
+                showGoToSettingsDialog()
+                isDialogShown = true  // Flag to prevent reopening dialog
+            }
+        }
+    }
+
+
+    private fun requestLocationPermission() {
+        when {
+            hasLocationPermission() -> fetchLocationAndSetCity()
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> showGoToSettingsDialog()
+            else -> showGoToSettingsDialog()
+        }
+    }
+
+    private fun showGoToSettingsDialog() {
+        // Avoid showing the dialog multiple times
+        if (!isDialogShown) {
+            AlertDialog.Builder(this)
+                .setTitle("Permission Needed")
+                .setMessage("You need to grant location permission manually. Please go to settings and enable it.")
+                .setPositiveButton("Go to Settings") { dialog, _ ->
+                    dialog.dismiss()
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                    isDialogShown = false
+                }
+                .setNegativeButton("Exit") { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+            isDialogShown = true
+        }
+    }
+
+
+    private fun showPermissionExplanationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Location Permission Required")
+            .setMessage("This app needs location access to function properly. Without it, the app cannot continue.")
+            .setPositiveButton("Allow") { _, _ ->
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+            .setNegativeButton("Exit") { _, _ ->
+                finish()
+            }
+            .setCancelable(false)
+            .show()
+    }
+}
 
 @Composable
 fun AppScreen(navController: NavHostController){

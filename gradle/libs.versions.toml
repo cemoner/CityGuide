@@ -36,6 +36,7 @@ constraintlayout = "2.2.0"
 ksp = "2.0.20-1.0.25"
 playServicesAuth = "21.3.0"
 playServicesAuthVersion = "22.0.0"
+playServicesLocation = "21.3.0"
 retrofit = "2.9.0"
 firebaseMessagingKtx = "24.1.0"
 firebaseMessaging = "24.1.0"
@@ -100,6 +101,7 @@ firebase-auth = {group = "com.google.firebase" ,name="firebase-auth-ktx"}
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-auth-v2200 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
