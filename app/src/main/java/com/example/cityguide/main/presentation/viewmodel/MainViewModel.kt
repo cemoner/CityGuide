@@ -82,11 +82,11 @@ constructor(
 
     private suspend fun handleLoggedInUser() {
         val profileUrl = getProfileUrlUseCase()
-        println("Profile URL: $profileUrl") // Debugging log
+        println("Profile URL: $profileUrl")
         ProfileImageUrlSingleton.setProfileImageUrl(profileUrl)
 
         val profileName = getProfileNameUseCase()
-        println("Profile Name: $profileName") // Debugging log
+        println("Profile Name: $profileName")
         ProfileNameSingleton.setName(profileName)
 
         val email = getEmailUseCase()

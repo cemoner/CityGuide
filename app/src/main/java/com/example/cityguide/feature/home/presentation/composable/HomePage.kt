@@ -1,21 +1,52 @@
 package com.example.cityguide.feature.home.presentation.composable
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.cityguide.R
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.SideEffect
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiAction
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiState
 import com.example.cityguide.feature.home.presentation.viewmodel.HomePageViewModel
 import com.example.cityguide.mvi.unpack
 import kotlinx.coroutines.flow.Flow
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import com.example.cityguide.feature.home.presentation.component.Weather
+import com.example.cityguide.ui.theme.DarkActionColor
+import com.example.cityguide.ui.theme.DarkTextColor
+import com.example.cityguide.ui.theme.LightBackgroundColor
 
 
 @Composable
@@ -25,27 +56,118 @@ fun HomeScreen(){
     HomeContent(viewModel,uiState,uiAction,sideEffect)
 }
 
-
 @Composable
 fun HomeContent(
     viewModel: HomePageViewModel,
     uiState: UiState,
     onAction: (UiAction) -> Unit,
     sideEffect: Flow<SideEffect>,
-){
-    Scaffold(
-    ) { innerPadding ->
+) {
+    val images:List<Painter> = listOf(
+        painterResource(R.drawable.gastronomy),
+        painterResource(R.drawable.night_life),
+        painterResource(R.drawable.cultural_and_enterteinment),
+        painterResource(R.drawable.accommodations),
+        painterResource(R.drawable.parks_and_nature),
+        painterResource(R.drawable.religious_sites),
+        painterResource(R.drawable.sports_and_recreation),
+        painterResource(R.drawable.health_and_wellness)
+    )
+
+    val categories:List<String> = listOf(
+        stringResource(R.string.gastronomy),
+        stringResource(R.string.night_life),
+        stringResource(R.string.cultural_and_entertainment),
+        stringResource(R.string.accommodations),
+        stringResource(R.string.parks_and_nature),
+        stringResource(R.string.religious_sites),
+        stringResource(R.string.sports_and_recreation),
+        stringResource(R.string.health_and_wellness)
+    )
+
+    val screenWidth: Dp = LocalConfiguration.current.screenWidthDp.dp
+    val itemWidth: Dp = screenWidth * 0.85f
+    val horizontalPadding = (screenWidth - itemWidth) / 2
+
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-        ){
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.padding(8.dp),
-                columns = StaggeredGridCells.Fixed(2)
-            ) {
+        ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(start = horizontalPadding / 4, end = horizontalPadding), horizontalAlignment = Alignment.Start,verticalArrangement = Arrangement.Center) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.explore_the),
+                    modifier = Modifier
+                        .padding(8.dp),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Row(){
+                    Text(
+                        text = stringResource(R.string.beautiful),
+                        modifier = Modifier
+                            .padding(8.dp),
+                        style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = stringResource(R.string.world),
+                        modifier = Modifier
+                            .padding(8.dp),
+                        style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                        color = DarkActionColor
+                    )
+                }
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            Column(modifier = Modifier.fillMaxWidth().padding(start = horizontalPadding / 4, end = horizontalPadding), horizontalAlignment = Alignment.Start,verticalArrangement = Arrangement.Center) {
+                Text(
+                    text = stringResource(R.string.categories),
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Start
+                )
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(start = horizontalPadding / 4, end = horizontalPadding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(uiState.categories.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .width(itemWidth)
+                            .padding(8.dp)
+                            .clickable{
+                                onAction(UiAction.OnCategoryClick(categories[index]))
+                            }
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(16.dp))
+                                .align(Alignment.Center),
+                            painter = images[index],
+                            contentDescription = categories[index],
+                            contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = categories[index],
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(8.dp),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = DarkTextColor
+                        )
+                    }
+                }
+            }
+            Weather()
         }
     }
 }
-
 

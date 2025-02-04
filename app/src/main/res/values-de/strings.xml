@@ -43,4 +43,21 @@
     <string name="favorites">Favoriten</string>
     <string name="logout">Ausloggen</string>
 
+    <!-- Home Page Strings -->
+    <string name="gastronomy">Gastronomie</string>
+    <string name="night_life">Nachtleben</string>
+    <string name="cultural_and_entertainment">Kultur und Unterhaltung</string>
+    <string name="accommodations">Unterkünfte</string>
+    <string name="parks_and_nature">Parks und Natur</string>
+    <string name="religious_sites">Religiöse Stätten</string>
+    <string name="sports_and_recreation">Sport und Erholung</string>
+    <string name="health_and_wellness">Gesundheit und Wellness</string>
+    <string name="explore_beautiful_world">Entdecke die schöne Welt</string>
+
+    <string name="explore_the">Erkunde die</string>
+    <string name="beautiful">Schöne</string>
+    <string name="world">Welt!</string>
+
+    <string name="categories">Kategorien</string>
+
 </resources>

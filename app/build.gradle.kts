@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.play.services.auth)
     implementation (libs.play.services.location)
+    implementation (libs.places)
 
 
 

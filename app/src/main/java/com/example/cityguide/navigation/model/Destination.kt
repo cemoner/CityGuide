@@ -32,6 +32,14 @@ sealed class Destination(
 
     object Map : NoArgumentDestination("map")
 
+    object CategoryPage : Destination("categoryPage","category"){
+
+        const val CATEGORY_KEY = "category"
+        operator fun invoke(category: String): String = route.appendParams(
+            CATEGORY_KEY to category
+        )
+    }
+
     object Verification : NoArgumentDestination("verification")
 
     object Profile : NoArgumentDestination("profile")

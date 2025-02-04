@@ -43,5 +43,21 @@
     <string name="favorites">Favoriler</string>
     <string name="logout">Çıkış Yap</string>
 
+    <!-- Home Page Strings -->
+    <string name="gastronomy">Gastronomi</string>
+    <string name="night_life">Gece Hayatı</string>
+    <string name="cultural_and_entertainment">Kültür ve Eğlence</string>
+    <string name="accommodations">Konaklamalar</string>
+    <string name="parks_and_nature">Parklar ve Doğa</string>
+    <string name="religious_sites">Dini Mekanlar</string>
+    <string name="sports_and_recreation">Spor ve Rekreasyon</string>
+    <string name="health_and_wellness">Sağlık ve Zindelik</string>
+    <string name="explore_beautiful_world">Güzel Dünyayı Keşfet</string>
+
+    <string name="explore_the">Keşfet</string>
+    <string name="beautiful">Güzel</string>
+    <string name="world">Dünyayı!</string>
+
+    <string name="categories">Kategoriler</string>
 
 </resources>

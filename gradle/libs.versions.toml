@@ -34,6 +34,7 @@ navigationCompose = "2.8.4"
 engageCore = "1.5.5"
 constraintlayout = "2.2.0"
 ksp = "2.0.20-1.0.25"
+places = "4.1.0"
 playServicesAuth = "21.3.0"
 playServicesAuthVersion = "22.0.0"
 playServicesLocation = "21.3.0"
@@ -99,6 +100,7 @@ firebase-auth = {group = "com.google.firebase" ,name="firebase-auth-ktx"}
 
 
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-auth-v2200 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }

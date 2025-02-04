@@ -7,6 +7,7 @@ import com.example.cityguide.feature.home.presentation.contract.HomePageContract
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.SideEffect
 import com.example.cityguide.mvi.MVI
 import com.example.cityguide.mvi.mvi
+import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,12 +16,15 @@ import javax.inject.Inject
 @HiltViewModel
 class HomePageViewModel
     @Inject constructor(
-         val appNavigator: AppNavigator
+         val appNavigator: AppNavigator,
     ): ViewModel(),
     MVI<UiState, UiAction, SideEffect> by mvi(
         initialUiState()
-    ){
-        override fun onAction(action: UiAction) {
+    ) {
+    override fun onAction(action: UiAction) {
+        when (action) {
+            is UiAction.OnCategoryClick -> navigateWithArgs(Destination.CategoryPage(action.category))
+        }
     }
 
     private fun navigate(destination:String){
@@ -29,5 +33,18 @@ class HomePageViewModel
         }
     }
 
+    private fun navigateWithArgs(destination:String){
+        viewModelScope.launch {
+            appNavigator.tryNavigateTo(destination)
+        }
+    }
 }
-private fun initialUiState():UiState = UiState.Loading
+private fun initialUiState():UiState = UiState(listOf(
+    "Gastronomy",
+    "Night Life",
+    "Cultural & Entertainment",
+    "Accommodations",
+    "Parks & Nature",
+    "Religious Sites",
+    "Sports & Recreation",
+    "Health & Wellness"))

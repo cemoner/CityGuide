@@ -49,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cityguide.feature.auth.presentation.composable.ForgotPasswordScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignInScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignUpScreen
+import com.example.cityguide.feature.home.presentation.composable.CategoryPageScreen
 import com.example.cityguide.feature.home.presentation.composable.HomeScreen
 import com.example.cityguide.feature.profile.presentation.composable.ProfileScreen
 import com.example.cityguide.feature.profile.presentation.viewmodel.ProfilePageViewModel
@@ -57,6 +58,8 @@ import com.example.cityguide.main.presentation.contract.MainContract.SideEffect
 import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
 import com.example.cityguide.main.presentation.viewmodel.MainViewModel
+import com.example.cityguide.main.util.CityNameSingleton
+import com.example.cityguide.main.util.CountryNameSingleton
 import com.example.cityguide.main.util.hasLocationPermission
 import com.example.cityguide.mvi.unpack
 import com.example.cityguide.navigation.model.Destination
@@ -128,7 +131,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private suspend fun getCityName(latitude: Double, longitude: Double): String? {
+
+    private suspend fun getCityAndCountryName(latitude: Double, longitude: Double): Pair<String?,String?>? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             suspendCancellableCoroutine { continuation ->
                 val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
@@ -139,9 +143,10 @@ class MainActivity : ComponentActivity() {
                         1,
                         object : Geocoder.GeocodeListener {
                             override fun onGeocode(addresses: List<android.location.Address>) {
-                                val city = addresses.firstOrNull()?.locality
-                                    ?: addresses.firstOrNull()?.adminArea
-                                continuation.resume(city)
+                                val address = addresses.firstOrNull()
+                                val city = address?.locality ?: address?.adminArea
+                                val country = address?.countryName
+                                continuation.resume(Pair(city, country))
                             }
 
                             override fun onError(errorMessage: String?) {
@@ -160,9 +165,10 @@ class MainActivity : ComponentActivity() {
                 val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
                 try {
                     val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                    val city = addresses?.firstOrNull()?.locality
-                        ?: addresses?.firstOrNull()?.adminArea // Fallback to adminArea if locality is null
-                    city
+                    val address = addresses?.firstOrNull()
+                    val city = address?.locality ?: address?.adminArea
+                    val country = address?.countryName
+                    Pair(city, country)
                 } catch (e: IOException) {
                     e.printStackTrace()
                     null
@@ -177,10 +183,16 @@ class MainActivity : ComponentActivity() {
             .addOnSuccessListener { location: Location? ->
                 location?.let {
                     lifecycleScope.launch {
-                        val cityName = getCityName(it.latitude, it.longitude)
-                        Log.d("MainActivity","Coordinates: ${it.latitude}, ${it.longitude}")
-                        Log.d("MainActivity", "City: $cityName")
-                        Toast.makeText(this@MainActivity, "City: $cityName", Toast.LENGTH_LONG).show()
+                        val cityName = getCityAndCountryName(it.latitude, it.longitude)
+                        cityName?.let { (city,country) ->
+                            if (city != null) {
+                                CityNameSingleton.setName(city)
+                            }
+                            if (country != null) {
+                                CountryNameSingleton.setName(country)
+                            }
+                        }
+                        Toast.makeText(this@MainActivity, "${CityNameSingleton.cityName.value}", Toast.LENGTH_LONG).show()
                     }
                 } ?: run {
                     Log.e("MainActivity", "Location unavailable")
@@ -196,15 +208,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        // If permission is granted, don't show any dialog
         if (hasLocationPermission()) {
             fetchLocationAndSetCity()
         } else {
-            // Only show the "Go to Settings" dialog if permission is still not granted
             if (!isDialogShown) {
                 showGoToSettingsDialog()
-                isDialogShown = true  // Flag to prevent reopening dialog
+                isDialogShown = true
             }
         }
     }
@@ -222,7 +231,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showGoToSettingsDialog() {
-        // Avoid showing the dialog multiple times
         if (!isDialogShown) {
             AlertDialog.Builder(this)
                 .setTitle("Permission Needed")
@@ -240,21 +248,6 @@ class MainActivity : ComponentActivity() {
                 .show()
             isDialogShown = true
         }
-    }
-
-
-    private fun showPermissionExplanationDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Location Permission Required")
-            .setMessage("This app needs location access to function properly. Without it, the app cannot continue.")
-            .setPositiveButton("Allow") { _, _ ->
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-            .setNegativeButton("Exit") { _, _ ->
-                finish()
-            }
-            .setCancelable(false)
-            .show()
     }
 }
 
@@ -322,6 +315,11 @@ fun AppContent(
                     composable(destination = Destination.Home) {
                         HomeScreen()
                     }
+
+                    composable(destination = Destination.CategoryPage) {
+                        CategoryPageScreen()
+                    }
+
                     composable(destination = Destination.Profile) {
                         ProfileScreen(profileUiState,profileOnAction,profileSideEffect,profileViewModel)
                     }
