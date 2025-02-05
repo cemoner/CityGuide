@@ -60,4 +60,10 @@
 
     <string name="categories">Kategoriler</string>
 
+    <!-- Sort Strings -->
+    <string name="sort_name">İsim</string>
+    <string name="sort_rating">Puan</string>
+    <string name="sort_distance">Mesafe</string>
+
+
 </resources>

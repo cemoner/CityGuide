@@ -50,7 +50,8 @@ fun CategoryPageContent(
 ){
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement =
+        if(uiState is UiState.Success) Arrangement.Top else Arrangement.Center,
         modifier = Modifier.padding(12.dp).fillMaxSize()
     ) {
         when(uiState){

@@ -148,7 +148,6 @@ class MainActivity : ComponentActivity() {
                                 val address = addresses.firstOrNull()
                                 val city = address?.locality ?: address?.adminArea
                                 val country = address?.countryName
-                                // Create a LocationDetails object with the received values.
                                 val result = LocationDetail(city, country, latitude, longitude)
                                 continuation.resume(result)
                             }

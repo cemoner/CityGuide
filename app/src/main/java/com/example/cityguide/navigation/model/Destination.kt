@@ -30,8 +30,6 @@ sealed class Destination(
 
     object ForgotPassword : NoArgumentDestination("forgotPassword")
 
-    object Map : NoArgumentDestination("map")
-
     object CategoryPage : Destination("categoryPage","category"){
 
         const val CATEGORY_KEY = "category"

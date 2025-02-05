@@ -63,4 +63,10 @@
 
     <string name="categories">Categories</string>
 
+    <!-- Sort Strings -->
+    <string name="sort_name">Name</string>
+    <string name="sort_rating">Rating</string>
+    <string name="sort_distance">Distance</string>
+
+
 </resources>

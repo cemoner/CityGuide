@@ -17,9 +17,6 @@ fun DynamicBottomBar(navController: NavHostController){
         Destination.Profile.fullRoute -> {
             NavigationBar(navController = navController)
         }
-        Destination.Map.fullRoute -> {
-            NavigationBar(navController = navController)
-        }
         Destination.Favorites.fullRoute -> {
             NavigationBar(navController = navController)
         }

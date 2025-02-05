@@ -1,5 +1,7 @@
 package com.example.cityguide.feature.home.presentation.contract
 
+import androidx.annotation.StringRes
+import com.example.cityguide.R
 import com.example.cityguide.feature.home.domain.model.Place
 
 interface CategoryPageContract {
@@ -24,11 +26,12 @@ interface CategoryPageContract {
 
     }
 
-    sealed interface SortType{
-        val name: String
-        data class Name(override val name: String = "Name"): SortType
-        data class Rating(override val name: String = "Rating"): SortType
-        data class Distance(override val name: String = "Distance"): SortType
+    sealed interface SortType {
+        @get:StringRes
+        val nameRes: Int
 
+        data class Name(override val nameRes: Int = R.string.sort_name) : SortType
+        data class Rating(override val nameRes: Int = R.string.sort_rating) : SortType
+        data class Distance(override val nameRes: Int = R.string.sort_distance) : SortType
     }
 }

@@ -22,7 +22,6 @@ sealed class NavItem(
 
     object Profile : NavItem(Icons.Outlined.Person, Icons.Filled.Person, "profile")
 
-
     companion object {
         fun navigationBarItems(): List<NavItem> = listOf(Home, Favorites, Profile)
     }

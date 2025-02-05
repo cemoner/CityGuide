@@ -15,7 +15,7 @@ object DataSourceModule {
 
     @Provides
     @Singleton
-    fun providePlacesDataSource(
+    fun providesPlacesDataSource(
         apiService: GooglePlacesApiService,
         @Named("googleApiKey") apiKey: String
     ): PlacesDataSource = PlacesDataSource(apiService, apiKey)

@@ -1,3 +1,4 @@
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cityguide.feature.home.presentation.contract.CategoryPageContract.SortType
 
@@ -23,7 +25,8 @@ fun SortDropdown(
     onSortSelected: (SortType) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val dropDownCurrentSort = remember { mutableStateOf(currentSort.name) }
+    // Store the resource id for the current sort (Int)
+    val dropDownCurrentSort = remember { mutableStateOf(currentSort.nameRes) }
     val sortOptions = listOf(SortType.Name(), SortType.Rating(), SortType.Distance())
 
     Box {
@@ -35,7 +38,7 @@ fun SortDropdown(
             ),
             modifier = Modifier.padding(4.dp)
         ) {
-            Text(text = dropDownCurrentSort.value)
+            Text(text = stringResource(id = dropDownCurrentSort.value))
             Icon(
                 imageVector = Icons.Filled.ArrowDropDown,
                 contentDescription = "Dropdown Arrow",
@@ -51,12 +54,12 @@ fun SortDropdown(
                 DropdownMenuItem(
                     onClick = {
                         onSortSelected(sortType)
-                        dropDownCurrentSort.value = sortType.name
+                        dropDownCurrentSort.value = sortType.nameRes
                         expanded.value = false
                     },
                     text = {
                         Text(
-                            text = sortType.name,
+                            text = stringResource(id = sortType.nameRes),
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
@@ -65,4 +68,3 @@ fun SortDropdown(
         }
     }
 }
-

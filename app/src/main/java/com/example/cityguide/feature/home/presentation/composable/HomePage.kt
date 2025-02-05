@@ -70,7 +70,18 @@ fun HomeContent(
         painterResource(R.drawable.health_and_wellness)
     )
 
-    val categories: List<String> = listOf(
+    val categoryNames: List<String> = listOf(
+        stringResource(R.string.gastronomy),
+        stringResource(R.string.night_life),
+        stringResource(R.string.cultural_and_entertainment),
+        stringResource(R.string.accommodations),
+        stringResource(R.string.parks_and_nature),
+        stringResource(R.string.religious_sites),
+        stringResource(R.string.sports_and_recreation),
+        stringResource(R.string.health_and_wellness)
+    )
+
+    val categoryInput: List<String> = listOf(
         "Gastronomy",
         "Night Life",
         "Cultural and Entertainment",
@@ -152,7 +163,7 @@ fun HomeContent(
                                 .width(itemWidth)
                                 .padding(8.dp)
                                 .clickable {
-                                    onAction(UiAction.OnCategoryClick(categories[index]))
+                                    onAction(UiAction.OnCategoryClick(categoryInput[index]))
                                 }
                         ) {
                             Image(
@@ -162,11 +173,11 @@ fun HomeContent(
                                     .clip(RoundedCornerShape(16.dp))
                                     .align(Alignment.Center),
                                 painter = images[index],
-                                contentDescription = categories[index],
+                                contentDescription = categoryInput[index],
                                 contentScale = ContentScale.Crop
                             )
                             Text(
-                                text = categories[index],
+                                text = categoryNames[index],
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
                                     .padding(8.dp),
