@@ -59,7 +59,9 @@ import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
 import com.example.cityguide.main.presentation.viewmodel.MainViewModel
 import com.example.cityguide.main.util.CityNameSingleton
+import com.example.cityguide.main.util.Coordinates
 import com.example.cityguide.main.util.CountryNameSingleton
+import com.example.cityguide.main.util.LocationDetail
 import com.example.cityguide.main.util.hasLocationPermission
 import com.example.cityguide.mvi.unpack
 import com.example.cityguide.navigation.model.Destination
@@ -132,7 +134,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun getCityAndCountryName(latitude: Double, longitude: Double): Pair<String?,String?>? {
+    private suspend fun getCityAndCountryName(latitude: Double, longitude: Double): LocationDetail? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             suspendCancellableCoroutine { continuation ->
                 val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
@@ -146,7 +148,9 @@ class MainActivity : ComponentActivity() {
                                 val address = addresses.firstOrNull()
                                 val city = address?.locality ?: address?.adminArea
                                 val country = address?.countryName
-                                continuation.resume(Pair(city, country))
+                                // Create a LocationDetails object with the received values.
+                                val result = LocationDetail(city, country, latitude, longitude)
+                                continuation.resume(result)
                             }
 
                             override fun onError(errorMessage: String?) {
@@ -168,7 +172,7 @@ class MainActivity : ComponentActivity() {
                     val address = addresses?.firstOrNull()
                     val city = address?.locality ?: address?.adminArea
                     val country = address?.countryName
-                    Pair(city, country)
+                    LocationDetail(city, country, latitude, longitude)
                 } catch (e: IOException) {
                     e.printStackTrace()
                     null
@@ -184,15 +188,16 @@ class MainActivity : ComponentActivity() {
                 location?.let {
                     lifecycleScope.launch {
                         val cityName = getCityAndCountryName(it.latitude, it.longitude)
-                        cityName?.let { (city,country) ->
+                        cityName?.let { (city,country,longtitude,latitude) ->
                             if (city != null) {
                                 CityNameSingleton.setName(city)
                             }
                             if (country != null) {
                                 CountryNameSingleton.setName(country)
                             }
+                            Coordinates.setCoordinates(longtitude,latitude)
                         }
-                        Toast.makeText(this@MainActivity, "${CityNameSingleton.cityName.value}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, CityNameSingleton.cityName.value + "," + CountryNameSingleton.countryName.value, Toast.LENGTH_LONG).show()
                     }
                 } ?: run {
                     Log.e("MainActivity", "Location unavailable")

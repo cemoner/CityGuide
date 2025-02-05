@@ -31,9 +31,11 @@ class PlacesRepositoryImpl @Inject constructor(
 
             do {
                 val responseResult = placesDataSource.getPlaces(query, pageToken)
+
                 responseResult.fold(
                     onSuccess = { placesResponse ->
-                        val places = placesResponse.results.map { it.toDomainModel() }
+                        val places = placesResponse.results.map {
+                            it.toDomainModel() }
                         allPlaces.addAll(places)
                         pageToken = placesResponse.nextPageToken
                         if (pageToken != null) {

@@ -8,5 +8,17 @@ data class PlaceResult(
     val formattedAddress: String,
     val rating: Double?,
     val photos: List<Photo>?,
-    val types: List<String>?
+    val types: List<String>?,
+    val geometry: Geometry
+)
+
+data class Geometry(
+    val location: Location
+)
+
+data class Location(
+    @SerializedName("lat")
+    val lat: Double,
+    @SerializedName("lng")
+    val lng: Double
 )

@@ -22,3 +22,17 @@ object CountryNameSingleton {
         _countryName.value = name
     }
 }
+
+object Coordinates {
+    var longitude: Double = 0.0
+    var latitude: Double = 0.0
+
+    fun setCoordinates(long: Double, lat: Double) {
+        longitude = long
+        latitude = lat
+    }
+
+    fun getCoordinates(): Pair<Double, Double> {
+        return Pair(longitude, latitude)
+    }
+}
