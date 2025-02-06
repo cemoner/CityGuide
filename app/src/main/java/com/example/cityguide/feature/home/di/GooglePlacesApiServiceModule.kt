@@ -13,5 +13,5 @@ import javax.inject.Singleton
 class GooglePlacesApiServiceModule {
     @Provides
     @Singleton
-    fun providesGooglePlacesApi(): GooglePlacesApiService = ApiClient.create()
+    fun providesGooglePlacesApi(): GooglePlacesApiService = ApiClient.createGoogleMapsApi()
 }

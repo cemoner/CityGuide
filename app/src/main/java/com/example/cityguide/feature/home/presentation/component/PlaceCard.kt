@@ -2,16 +2,11 @@ package com.example.cityguide.feature.home.presentation.component
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,12 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
@@ -56,14 +47,11 @@ fun PlaceCard(place: Place?) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-        shape = RoundedCornerShape(12.dp)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(16.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f)
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Image at the top
             place.photoReference.let { photoRef ->
                 val imageUrl = getPhotoUrl(photoRef)
                 val painter = rememberAsyncImagePainter(
@@ -83,70 +71,41 @@ fun PlaceCard(place: Place?) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(12.dp))
+                        .aspectRatio(16f / 9f)
+                        .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 )
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            )
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Bottom
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = place.name,
                     style = MaterialTheme.typography.titleLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        shadow = Shadow(
-                            color = MaterialTheme.colorScheme.surface,
-                            offset = Offset(2f, 2f),
-                            blurRadius = 4f
-                        )
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 )
-                Text(
-                    text = place.address,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        shadow = Shadow(
-                            color = MaterialTheme.colorScheme.surface,
-                            offset = Offset(2f, 2f),
-                            blurRadius = 4f
-                        )
-                    ),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-                place.rating.let { rating ->
-                    Row(
-                        modifier = Modifier.padding(top = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Rating",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = String.format("%.1f", rating),
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                shadow = Shadow(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    offset = Offset(2f, 2f),
-                                    blurRadius = 4f
-                                )
-                            ),
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                    }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = "Rating",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = String.format("%.1f", place.rating),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
                 }
             }
         }
     }
 }
+

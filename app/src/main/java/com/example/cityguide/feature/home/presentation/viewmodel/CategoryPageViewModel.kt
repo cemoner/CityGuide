@@ -16,6 +16,7 @@ import com.example.cityguide.mvi.MVI
 import com.example.cityguide.mvi.mvi
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -88,7 +89,7 @@ class CategoryPageViewModel
     }
 
     private fun calculateDistance(longitude: Double, latitude: Double): Int {
-        val userLocation = Coordinates.getCoordinates()
+        val userLocation = Coordinates.coordinates.value
 
         val startPoint = Location("userLocation").apply {
             this.latitude = userLocation.first

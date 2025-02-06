@@ -24,15 +24,10 @@ object CountryNameSingleton {
 }
 
 object Coordinates {
-    var longitude: Double = 0.0
-    var latitude: Double = 0.0
+    private val _coordinates = MutableStateFlow(Pair(0.0, 0.0))
+    val coordinates: StateFlow<Pair<Double, Double>> get() = _coordinates
 
     fun setCoordinates(long: Double, lat: Double) {
-        longitude = long
-        latitude = lat
-    }
-
-    fun getCoordinates(): Pair<Double, Double> {
-        return Pair(longitude, latitude)
+        _coordinates.value = Pair(long, lat)
     }
 }

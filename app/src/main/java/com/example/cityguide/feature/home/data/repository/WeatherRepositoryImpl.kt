@@ -1,5 +1,6 @@
 package com.example.cityguide.feature.home.data.repository
 
+import android.util.Log
 import com.example.cityguide.feature.home.data.datasource.remote.WeatherDataSource
 import com.example.cityguide.feature.home.domain.mapping.toDomainModel
 import com.example.cityguide.feature.home.domain.model.Weather
@@ -13,6 +14,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun getWeather(lat: Double, lon: Double): Result<Weather> {
         return try {
             val responseResult = weatherDataSource.getWeather(lat, lon)
+            Log.d("WeatherRepositoryImpl", "Response Result: $responseResult")
             responseResult.map { weatherResponse ->
                 weatherResponse.toDomainModel()
             }

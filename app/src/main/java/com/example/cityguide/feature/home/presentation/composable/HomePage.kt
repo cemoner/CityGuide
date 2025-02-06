@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,13 +35,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cityguide.R
-import com.example.cityguide.feature.home.presentation.component.Weather
+import com.example.cityguide.feature.home.presentation.component.WeatherCard
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.SideEffect
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiAction
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiState
+import com.example.cityguide.feature.home.presentation.contract.HomePageContract.WeatherUiState
 import com.example.cityguide.feature.home.presentation.viewmodel.HomePageViewModel
 import com.example.cityguide.mvi.unpack
-import com.example.cityguide.ui.theme.DarkActionColor
 import com.example.cityguide.ui.theme.DarkTextColor
 import kotlinx.coroutines.flow.Flow
 
@@ -93,56 +94,40 @@ fun HomeContent(
     )
 
     val screenWidth: Dp = LocalConfiguration.current.screenWidthDp.dp
-    val itemWidth: Dp = screenWidth * 0.85f
+    val itemWidth: Dp = screenWidth * 0.65f
     val horizontalPadding = (screenWidth - itemWidth) / 2
 
     Scaffold { innerPadding ->
         LazyColumn(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(start = horizontalPadding / 4, end = horizontalPadding),
+                    modifier = Modifier.fillMaxWidth().padding(horizontalPadding / 5),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = stringResource(R.string.explore_the),
+                        text = stringResource(R.string.explore_the_world),
                         modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    Row {
-                        Text(
-                            text = stringResource(R.string.beautiful),
-                            modifier = Modifier.padding(8.dp),
-                            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = stringResource(R.string.world),
-                            modifier = Modifier.padding(8.dp),
-                            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-                            color = DarkActionColor
-                        )
-                    }
                 }
             }
 
-            item { Spacer(modifier = Modifier.height(12.dp)) }
-
             item {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(start = horizontalPadding / 4, end = horizontalPadding),
+                    modifier = Modifier.fillMaxWidth().padding(start = horizontalPadding / 5),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = stringResource(R.string.categories),
                         modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Start
                     )
@@ -152,44 +137,71 @@ fun HomeContent(
             item { Spacer(modifier = Modifier.height(6.dp)) }
 
             item {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(start = horizontalPadding / 4, end = horizontalPadding),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(uiState.categories.size) { index ->
-                        Box(
-                            modifier = Modifier
-                                .width(itemWidth)
-                                .padding(8.dp)
-                                .clickable {
-                                    onAction(UiAction.OnCategoryClick(categoryInput[index]))
-                                }
-                        ) {
-                            Image(
+                Box(modifier = Modifier.height(515.dp)){
+                    LazyHorizontalStaggeredGrid(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = horizontalPadding / 5, vertical = 0.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+
+                        rows = StaggeredGridCells.Fixed(2),
+                    ) {
+                        items(uiState.categories.size) { index ->
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .align(Alignment.Center),
-                                painter = images[index],
-                                contentDescription = categoryInput[index],
-                                contentScale = ContentScale.Crop
-                            )
-                            Text(
-                                text = categoryNames[index],
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(8.dp),
-                                style = MaterialTheme.typography.titleLarge,
-                                color = DarkTextColor
-                            )
+                                    .width(itemWidth)
+                                    .padding(8.dp)
+                                    .clickable {
+                                        onAction(UiAction.OnCategoryClick(categoryInput[index]))
+                                    }
+                            ) {
+                                Image(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .aspectRatio(1f)
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .align(Alignment.Center),
+                                    painter = images[index],
+                                    contentDescription = categoryInput[index],
+                                    contentScale = ContentScale.Crop
+                                )
+                                Text(
+                                    text = categoryNames[index],
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(8.dp),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = DarkTextColor
+                                )
+                            }
                         }
                     }
                 }
             }
-
-            item { Weather() }
+            item{Spacer(modifier = Modifier.height(12.dp))}
+            item {
+                when(uiState.weatherUiState){
+                    is WeatherUiState.Loading -> {
+                        CircularProgressIndicator()
+                    }
+                    is WeatherUiState.Success -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            WeatherCard(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .padding(horizontal = horizontalPadding / 5, vertical = 8.dp),
+                                weather = uiState.weatherUiState.weather
+                            )
+                        }
+                    }
+                    is WeatherUiState.Error -> {
+                        Text(text = uiState.weatherUiState.message)
+                    }
+                }
+            }
         }
     }
 }

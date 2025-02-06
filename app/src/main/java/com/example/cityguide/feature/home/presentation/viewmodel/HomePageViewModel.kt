@@ -4,19 +4,17 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cityguide.feature.home.domain.usecase.GetWeatherUseCase
-import com.example.cityguide.feature.home.presentation.contract.HomePageContract
-import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiState
-import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiAction
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.SideEffect
+import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiAction
+import com.example.cityguide.feature.home.presentation.contract.HomePageContract.UiState
 import com.example.cityguide.feature.home.presentation.contract.HomePageContract.WeatherUiState
-import com.example.cityguide.main.util.CityNameSingleton
 import com.example.cityguide.main.util.Coordinates
-import com.example.cityguide.main.util.CountryNameSingleton
 import com.example.cityguide.mvi.MVI
 import com.example.cityguide.mvi.mvi
 import com.example.cityguide.navigation.model.Destination
 import com.example.cityguide.navigation.navigator.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,15 +35,22 @@ class HomePageViewModel
 
 
     init {
-        fetchWeather()
+        viewModelScope.launch {
+            Coordinates.coordinates.collectLatest { (lat, lon) ->
+                if (lat != 0.0 && lon != 0.0) {
+                    fetchWeather(lat, lon)
+                }
+            }
+        }
     }
 
-    private fun fetchWeather() {
+    private fun fetchWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
             try {
-                val coordinates = Coordinates.getCoordinates()
-                val weather = getWeatherUseCase(coordinates.second, coordinates.first)
-                Log.d("WeatherViewModel", "Weather: $weather")
+                val weather = getWeatherUseCase(lat,lon)
+                weather.onSuccess {
+                    updateUiState(uiState.value.copy(weatherUiState = WeatherUiState.Success(it)))
+                }
             } catch (e: Exception) {
 
             }
@@ -71,4 +76,5 @@ private fun initialUiState():UiState = UiState(listOf(
     "Parks & Nature",
     "Religious Sites",
     "Sports & Recreation",
-    "Health & Wellness"), WeatherUiState.Loading)
+    "Health & Wellness"), WeatherUiState.Loading
+)

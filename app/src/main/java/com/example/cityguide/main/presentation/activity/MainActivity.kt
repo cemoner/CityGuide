@@ -194,6 +194,7 @@ class MainActivity : ComponentActivity() {
                             if (country != null) {
                                 CountryNameSingleton.setName(country)
                             }
+                            Log.d("Coordinates", "Latitude: $latitude, Longitude: $longtitude")
                             Coordinates.setCoordinates(longtitude,latitude)
                         }
                         Toast.makeText(this@MainActivity, CityNameSingleton.cityName.value + "," + CountryNameSingleton.countryName.value, Toast.LENGTH_LONG).show()

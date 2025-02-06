@@ -11,11 +11,11 @@ val DarkActionColor = Color(0xFFFF7029)
 val DarkSurfaceBackgroundColor = Color(0xFF1E1E1E)
 val DarkStarRatingColor = Color(0xFFFFD336)
 
-// Light Colors
+
 val MyPrimaryBlue = Color(0xFF3260E8)
 val LightBackgroundColor = Color(0xFFFFFFFF)
 val LightSubTextColor = Color(0xFF7D848D)
 val LightTextColor = Color(0xFF000000)
 val LightActionColor = Color(0xFFFF7029)
-val LightSurfaceBackgroundColor = Color(0xFFF7F7F9)
+val LightSurfaceBackgroundColor = Color(0xFFF7F7F3) // RGB: (247,247,243)
 val LightStarRatingColor = Color(0xFFFFD336)
