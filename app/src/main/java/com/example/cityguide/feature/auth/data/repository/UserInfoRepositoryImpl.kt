@@ -14,6 +14,8 @@ class UserInfoRepositoryImpl @Inject constructor(
 
     override suspend fun getEmail(): String = firebaseAuth.currentUser?.email.toString()
 
+    override suspend fun getUserId(): String? = firebaseAuth.currentUser?.uid
+
     override fun isUserLoggedIn():Boolean = firebaseAuth.currentUser != null
 
     override fun getSignedInUser(): UserData? = firebaseAuth.currentUser?.run {

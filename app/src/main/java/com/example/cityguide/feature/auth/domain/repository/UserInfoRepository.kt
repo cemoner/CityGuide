@@ -9,6 +9,8 @@ interface UserInfoRepository {
 
     suspend fun getEmail(): String
 
+    suspend fun getUserId(): String?
+
     fun isUserLoggedIn():Boolean
 
     fun getSignedInUser(): UserData?

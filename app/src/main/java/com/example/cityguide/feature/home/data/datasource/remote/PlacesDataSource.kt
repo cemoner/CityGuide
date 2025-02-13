@@ -1,6 +1,7 @@
 package com.example.cityguide.feature.home.data.datasource.remote
 
 import com.example.cityguide.feature.home.data.api.GooglePlacesApiService
+import com.example.cityguide.feature.home.data.model.PlaceDetailResponse
 import com.example.cityguide.feature.home.data.model.PlacesResponse
 import com.example.cityguide.retrofit.ApiHandler
 import com.example.cityguide.retrofit.NetworkResult
@@ -25,6 +26,21 @@ class PlacesDataSource
             }
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+     suspend fun getPlaceDetails(placeId: String): Result<PlaceDetailResponse> {
+        return try {
+            val result = handleApi { apiService.getPlaceDetails(placeId, apiKey) }
+            when(result){
+                is NetworkResult.Success -> {
+                    Result.success(result.data)
+                }
+                is NetworkResult.Error -> Result.failure(Exception(result.errorMsg))
+                is NetworkResult.Exception -> Result.failure(result.e)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

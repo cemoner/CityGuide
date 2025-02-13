@@ -7,15 +7,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Geocoder
-import android.location.Location
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -40,28 +34,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cityguide.feature.auth.presentation.composable.ForgotPasswordScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignInScreen
 import com.example.cityguide.feature.auth.presentation.composable.SignUpScreen
+import com.example.cityguide.feature.favorites.presentation.composable.FavoritesScreen
 import com.example.cityguide.feature.home.presentation.composable.CategoryPageScreen
 import com.example.cityguide.feature.home.presentation.composable.HomeScreen
+import com.example.cityguide.feature.home.presentation.composable.PlaceDetailScreen
 import com.example.cityguide.feature.profile.presentation.composable.ProfileScreen
 import com.example.cityguide.feature.profile.presentation.viewmodel.ProfilePageViewModel
-import com.example.cityguide.main.util.LocationException
 import com.example.cityguide.main.presentation.contract.MainContract.SideEffect
 import com.example.cityguide.main.presentation.contract.MainContract.UiAction
 import com.example.cityguide.main.presentation.contract.MainContract.UiState
 import com.example.cityguide.main.presentation.viewmodel.MainViewModel
-import com.example.cityguide.main.util.CityNameSingleton
-import com.example.cityguide.main.util.Coordinates
-import com.example.cityguide.main.util.CountryNameSingleton
-import com.example.cityguide.main.util.LocationDetail
 import com.example.cityguide.main.util.hasLocationPermission
 import com.example.cityguide.mvi.unpack
 import com.example.cityguide.navigation.model.Destination
@@ -72,17 +61,9 @@ import com.example.cityguide.navigation.presentation.composable.composable
 import com.example.cityguide.ui.theme.CityGuideTheme
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.util.Locale
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -103,11 +84,12 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                fetchLocationAndSetCity()
+                mainViewModel.fetchLocationAndSetCity(fusedLocationClient)
             } else {
                 requestLocationPermission()
             }
@@ -122,9 +104,8 @@ class MainActivity : ComponentActivity() {
             requestLocationPermission()
         }
         else {
-            fetchLocationAndSetCity()
+            mainViewModel.fetchLocationAndSetCity(fusedLocationClient)
         }
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
@@ -134,87 +115,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun getCityAndCountryName(latitude: Double, longitude: Double): LocationDetail? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            suspendCancellableCoroutine { continuation ->
-                val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
-                if (Geocoder.isPresent()) {
-                    geocoder.getFromLocation(
-                        latitude,
-                        longitude,
-                        1,
-                        object : Geocoder.GeocodeListener {
-                            override fun onGeocode(addresses: List<android.location.Address>) {
-                                val address = addresses.firstOrNull()
-                                val city = address?.locality ?: address?.adminArea
-                                val country = address?.countryName
-                                val result = LocationDetail(city, country, latitude, longitude)
-                                continuation.resume(result)
-                            }
-
-                            override fun onError(errorMessage: String?) {
-                                continuation.resumeWithException(
-                                    RuntimeException(errorMessage ?: "Unknown geocoding error")
-                                )
-                            }
-                        }
-                    )
-                } else {
-                    continuation.resumeWithException(RuntimeException("Geocoder is not present on this device."))
-                }
-            }
-        } else {
-            withContext(Dispatchers.IO) {
-                val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
-                try {
-                    val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                    val address = addresses?.firstOrNull()
-                    val city = address?.locality ?: address?.adminArea
-                    val country = address?.countryName
-                    LocationDetail(city, country, latitude, longitude)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    null
-                }
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun fetchLocationAndSetCity() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.let {
-                    lifecycleScope.launch {
-                        val cityName = getCityAndCountryName(it.latitude, it.longitude)
-                        cityName?.let { (city,country,longtitude,latitude) ->
-                            if (city != null) {
-                                CityNameSingleton.setName(city)
-                            }
-                            if (country != null) {
-                                CountryNameSingleton.setName(country)
-                            }
-                            Log.d("Coordinates", "Latitude: $latitude, Longitude: $longtitude")
-                            Coordinates.setCoordinates(longtitude,latitude)
-                        }
-                        Toast.makeText(this@MainActivity, CityNameSingleton.cityName.value + "," + CountryNameSingleton.countryName.value, Toast.LENGTH_LONG).show()
-                    }
-                } ?: run {
-                    Log.e("MainActivity", "Location unavailable")
-                    throw LocationException("Location Unavailable")
-                }
-            }
-            .addOnFailureListener {
-                Log.e("MainActivity", "Failed to fetch location: ${it.message}")
-                throw it
-            }
-    }
-
-
     override fun onResume() {
         super.onResume()
         if (hasLocationPermission()) {
-            fetchLocationAndSetCity()
+            mainViewModel.fetchLocationAndSetCity(fusedLocationClient)
         } else {
             if (!isDialogShown) {
                 showGoToSettingsDialog()
@@ -223,10 +127,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
     private fun requestLocationPermission() {
         when {
-            hasLocationPermission() -> fetchLocationAndSetCity()
+            hasLocationPermission() -> mainViewModel.fetchLocationAndSetCity(fusedLocationClient)
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -278,15 +181,16 @@ fun AppContent(
     navigator: AppNavigator,
     navController: NavHostController
 ) {
-    val isInitialized by viewModel.isInitialized.collectAsState()
-    LaunchedEffect(isInitialized) {
-        if (!isInitialized) {
-            viewModel.markInitializationComplete()
-        }
-    }
     val profileViewModel: ProfilePageViewModel = hiltViewModel()
     val (profileUiState,profileOnAction,profileSideEffect) = profileViewModel.unpack()
 
+    val isInitialized by viewModel.isInitialized.collectAsState()
+    val isDataRetrieved by viewModel.isDataRetrieved.collectAsState()
+    LaunchedEffect(isInitialized, isDataRetrieved) {
+        if (!isInitialized && isDataRetrieved) {
+            viewModel.markInitializationComplete()
+        }
+    }
     when(uiState){
         is UiState.Error -> TODO()
         is UiState.Loading -> {
@@ -321,7 +225,7 @@ fun AppContent(
                         HomeScreen()
                     }
 
-                    composable(destination = Destination.CategoryPage) {
+                    composable(destination = Destination.Category) {
                         CategoryPageScreen()
                     }
 
@@ -340,6 +244,10 @@ fun AppContent(
                     }
 
                     composable(destination = Destination.Favorites) {
+                        FavoritesScreen()
+                    }
+                    composable(destination = Destination.PlaceDetail) {
+                        PlaceDetailScreen()
                     }
 
                 }

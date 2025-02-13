@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.cityguide.R
 import com.example.cityguide.main.util.LanguageChangeHelper
-import com.example.cityguide.ui.theme.LightStarRatingColor
 
 @Composable
 fun LanguageSelector() {

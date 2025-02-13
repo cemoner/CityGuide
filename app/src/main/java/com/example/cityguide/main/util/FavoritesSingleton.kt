@@ -1,27 +1,24 @@
 package com.example.cityguide.main.util
 
 import androidx.compose.runtime.mutableStateListOf
+import com.example.cityguide.feature.home.domain.model.Place
 
 object FavoritesSingleton {
 
-    private val _favorites = mutableStateListOf<Int>()
+    private val _favorites = mutableStateListOf<Place>()
 
-    val favorites: List<Int>
+    val favorites: List<Place>
         get() = _favorites
 
-    fun addToFavorites(productId: Int) {
-        if (!favorites.contains(productId)) {
-            _favorites.add(productId)
+    fun addToFavorites(place: Place) {
+        if (!favorites.contains(place)) {
+            _favorites.add(place)
         }
     }
 
-    fun deleteFromFavorites(productId: Int) {
-        _favorites.remove(productId)
+    fun deleteFromFavorites(place: Place) {
+        _favorites.remove(place)
     }
 
-    fun isFavorite(productId: Int): Boolean = favorites.contains(productId)
-
-    fun clearFavorites() {
-        _favorites.clear()
-    }
+    fun isFavorite(placeId: String): Boolean = _favorites.any { it.placeId == placeId }
 }

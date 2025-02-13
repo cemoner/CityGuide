@@ -19,10 +19,12 @@ interface CategoryPageContract {
     sealed interface UiAction {
         data class OnSortClick(val sort: SortType) : UiAction
         data class OnSearchTextChange(val text: String) : UiAction
-
+        data class OnPlaceClick(val placeId: String) : UiAction
+        data class onFavoriteClick(val place: Place) : UiAction
 
     }
     sealed interface SideEffect {
+        data class ShowToast(val message: String) : SideEffect
 
     }
 

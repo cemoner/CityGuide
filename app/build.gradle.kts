@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime.android)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -108,6 +109,9 @@ dependencies {
     implementation (libs.play.services.location)
     implementation (libs.places)
     implementation("com.google.accompanist:accompanist-flowlayout:0.31.1-alpha")
+    implementation (libs.gson)
+    implementation (libs.androidx.material3.v140alpha07)
+
 
 }
 kapt {

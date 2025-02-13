@@ -1,6 +1,5 @@
 package com.example.cityguide.feature.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cityguide.feature.home.domain.usecase.GetWeatherUseCase
@@ -29,7 +28,7 @@ class HomePageViewModel
     ) {
     override fun onAction(action: UiAction) {
         when (action) {
-            is UiAction.OnCategoryClick -> navigateWithArgs(Destination.CategoryPage(action.category))
+            is UiAction.OnCategoryClick -> navigateWithArgs(Destination.Category(action.category))
         }
     }
 
@@ -54,11 +53,6 @@ class HomePageViewModel
             } catch (e: Exception) {
 
             }
-        }
-    }
-    private fun navigate(destination:String){
-        viewModelScope.launch {
-            appNavigator.tryNavigateTo(destination)
         }
     }
 

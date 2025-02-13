@@ -30,7 +30,7 @@ sealed class Destination(
 
     object ForgotPassword : NoArgumentDestination("forgotPassword")
 
-    object CategoryPage : Destination("categoryPage","category"){
+    object Category : Destination("category","category"){
 
         const val CATEGORY_KEY = "category"
         operator fun invoke(category: String): String = route.appendParams(
@@ -38,7 +38,13 @@ sealed class Destination(
         )
     }
 
-    object Verification : NoArgumentDestination("verification")
+    object PlaceDetail : Destination("placeDetail","placeId"){
+
+        const val PLACE_ID_KEY = "place"
+        operator fun invoke(placeId: String): String = route.appendParams(
+            PLACE_ID_KEY to placeId
+        )
+    }
 
     object Profile : NoArgumentDestination("profile")
 }
