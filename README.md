@@ -1,58 +1,80 @@
-City Guide App
-City Guide App is a native Android application designed to help users navigate and explore urban environments. It provides interactive maps, real-time local information, and personalized recommendations to enhance the way citizens experience their city.
+# City Guide App
 
-Features
-Interactive Maps: Seamless native map integration for efficient navigation and location-based searches.
-Local Services & Events: Access up-to-date details on restaurants, public transportation, cultural sites, and events.
-Favorites & Personalization: Easily save and manage your favorite locations.
-Real-Time Updates: Integration with Firebase ensures live updates for traffic, events, and more.
-Modern UI: Built using Jetpack Compose for a responsive and visually appealing interface.
-Technologies Used
-Android (Kotlin): Native app development for optimal performance.
-Jetpack Compose: Declarative UI framework that simplifies UI creation.
-Retrofit: Network library for efficient API communication.
-Firebase: For authentication, real-time database, and push notifications.
-Dagger Hilt: Dependency injection framework for clean and scalable architecture.
-MVVM / MVI Patterns: For managing app state and business logic effectively.
+Welcome to the **City Guide App** repository! This project is a modern, feature-based Android application for shopping electronic products. Built entirely with Jetpack Compose and following Clean Architecture principles, the app uses MVVM and MVI patterns for efficient state management and separation of concerns.
 
-Getting Started
-Prerequisites
-Android Studio (Arctic Fox or later)
-Kotlin 1.6+
-An Android device or emulator (Android 8.0/Oreo or later)
-Installation
-Clone the Repository:
+---
 
-bash
-Copy
-Edit
-git clone https://github.com/cemoner/city-guide-app.git
-cd city-guide-app
-Open in Android Studio:
+## 📱 Features
 
-Launch Android Studio.
-Choose “Open an Existing Project” and select the cloned repository folder.
-Wait for Gradle to sync and build the project.
-Configure Firebase:
+- **User Authentication**: Smooth and secure login and registration flows.
+- **Location Catalog**: Browse and search a wide range of locations.
+- **Location Details**: View detailed location specifications and reviews.
+- **Weather Display**: See the weather in the city of your choosing!.
+- **User Profile**: Manage account settings and view order history.
+- **Dynamic Navigation**: Feature-aware navigation system.
 
-Download your google-services.json file from the Firebase Console.
-Place the file in the app/ directory.
-Running the App
-Connect an Android device or start an emulator.
-Click the "Run" button in Android Studio.
-The app will launch, allowing you to explore its city guide features.
-Contributing
-Contributions are welcome! To contribute:
+---
 
-Fork the repository.
-Create a new branch (git checkout -b feature-name).
-Commit your changes (git commit -m 'Add new feature').
-Push to the branch (git push origin feature-name).
-Open a Pull Request.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## 🛠️ Tech Stack
 
-Contact
-GitHub Username: cemoner
-Email: cemoner@outlook.com
-Project Link: https://github.com/cemoner/city-guide-app
+### **Languages & Frameworks**
+- **Kotlin**: Clean and concise Android development.
+- **Jetpack Compose**: Declarative and fully XML-free UI development.
+
+### **Architecture**
+- **Feature-Based Clean Architecture**:  
+  Each feature has its own `data`, `domain`, and `presentation` layers.
+- **MVVM (Model-View-ViewModel)**: For reactive UI updates and modularized screens.
+- **MVI (Model-View-Intent)**: Efficient state management and reduced callback functions.
+
+### **Libraries & Tools**
+- **Jetpack Compose**: Jetpack Compose for Declarative and Stateful UI
+- **Navigation**: Compose Navigation with custom utilities for modular navigation.
+- **Dependency Injection**: Dagger Hilt for scalable dependency management.
+- **Networking**: Retrofit for API interactions.
+- **Database**: Room for local persistence.
+- **Reactive Programming**: Flow and StateFlow for consistent state management.
+
+---
+
+## 📂 Project Structure
+
+### Overall Structure
+
+```plaintext
+📂 app
+ ┣ 📂 common             # Shared utilities (e.g., extensions, mappers)
+ ┣ 📂 features           # Feature modules
+ ┃ ┣ 📂 auth             # Authentication feature (data, domain, presentation)
+ ┃ ┣ 📂 favorites        # Favorites feature (data, domain, presentation)
+ ┃ ┣ 📂 favorites        # Home feature (data, domain, presentation)
+ ┃ ┗ 📂 profile          # Profile-related features
+ ┣ 📂 main               # App-level classes (e.g., Application, entry point)
+ ┣ 📂 mvi                # Base classes and utilities for MVI pattern
+ ┗ 📂 navigation         # Navigation-related code (e.g., NavHost, destinations)
+```
+---
+## ⚙️ Setup Instructions
+
+1. **Clone this repository**:
+   ```bash
+   git clone https://github.com/your-username/electronic-store-app.git
+   cd electronic-store-app
+2. Open the project in Android Studio.
+3. Sync the Gradle files.
+4. Run the app on an emulator or connected device.
+
+🚀 Features in Development
+Push Notifications: Stay updated with the latest deals and offers.
+<br>
+---
+<br>
+👨‍💻 Contributions
+<br>
+Contributions are welcome! 
+<br>
+Feel free to submit a pull request or open an issue for improvements or feature requests.
+<br>
+---
+🙌 Acknowledgments
+Special thanks to Çukurova University Computer Engineering Department for mentorship and guidance during development.
