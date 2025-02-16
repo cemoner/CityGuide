@@ -59,8 +59,8 @@ Built entirely with Jetpack Compose and following Clean Architecture principles,
 
 1. **Clone this repository**:
    ```bash
-   git clone https://github.com/cemoner/city-guide-app.git
-   cd electronic-store-app
+   git clone https://github.com/cemoner/CityGuide.git
+   cd CityGuide
 2. Open the project in Android Studio.
 3. Sync the Gradle files.
 4. Run the app on an emulator or connected device.
