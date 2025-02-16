@@ -76,6 +76,8 @@ Contributions are welcome!
 <br>
 Feel free to submit a pull request or open an issue for improvements or feature requests.
 <br>
+
 ---
+<br>
 🙌 Acknowledgments
 Special thanks to Çukurova University Computer Engineering Department for mentorship and guidance during development.
