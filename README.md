@@ -1,6 +1,7 @@
 # City Guide App
 
-Welcome to the **City Guide App** repository! This project is a modern, feature-based Android application for shopping electronic products. Built entirely with Jetpack Compose and following Clean Architecture principles, the app uses MVVM and MVI patterns for efficient state management and separation of concerns.
+Welcome to the **City Guide App** repository! This project is a modern, feature-based Android application for guidance in a city. 
+Built entirely with Jetpack Compose and following Clean Architecture principles, the app uses MVVM and MVI patterns for efficient state management and separation of concerns.
 
 ---
 
