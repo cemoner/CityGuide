@@ -59,7 +59,7 @@ Built entirely with Jetpack Compose and following Clean Architecture principles,
 
 1. **Clone this repository**:
    ```bash
-   git clone https://github.com/your-username/electronic-store-app.git
+   git clone https://github.com/cemoner/city-guide-app.git
    cd electronic-store-app
 2. Open the project in Android Studio.
 3. Sync the Gradle files.
