@@ -11,10 +11,8 @@ import android.net.Uri
 class UserInfoUpdateRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) : UserInfoUpdateRepository {
-
     private val currentUser
         get() = firebaseAuth.currentUser!!
-
     override suspend fun updateName(name: String): Result<Unit> {
         return try {
             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -26,7 +24,6 @@ class UserInfoUpdateRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-
     override suspend fun updateSurname(surname: String): Result<Unit> {
         return try {
             val updatedName = currentUser.displayName?.let { "$it $surname" } ?: surname
@@ -39,7 +36,6 @@ class UserInfoUpdateRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-
     override suspend fun updateProfileImageUrl(profileImageUrl: String): Result<Unit> {
         return try {
             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -51,6 +47,4 @@ class UserInfoUpdateRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-
-
 }

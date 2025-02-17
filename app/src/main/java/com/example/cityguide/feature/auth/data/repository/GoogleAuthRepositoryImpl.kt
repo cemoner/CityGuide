@@ -72,27 +72,30 @@ class GoogleAuthRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() {
         try {
+            // 1. Sign out from Firebase
+            firebaseAuth.signOut()
+
+            // 2. Clear Google One Tap session
+            oneTapClient.signOut().await() // Add this line
+
+            // 3. Clear Google Sign-In client (traditional approach)
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
-
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
-
+            googleSignInClient.signOut().await()
             googleSignInClient.revokeAccess().await()
 
-            firebaseAuth.signOut()
-
+            // 4. Clear local profile data
             ProfileImageUrlSingleton.setProfileImageUrl("")
             ProfileNameSingleton.setName("")
             ProfileEmailSingleton.setEmail("")
         } catch (exception: Exception) {
-            exception.printStackTrace()
             if (exception is CancellationException) throw exception
+            exception.printStackTrace()
         }
     }
-
-
 
 
     private fun buildSignInRequest():BeginSignInRequest {

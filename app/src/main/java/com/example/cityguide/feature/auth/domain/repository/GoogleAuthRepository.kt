@@ -8,5 +8,4 @@ interface GoogleAuthRepository {
     suspend fun signIn(): IntentSender?
     suspend fun signInWithIntent(intent: Intent): SignInResult
     suspend fun signOut()
-
 }

@@ -27,7 +27,6 @@ class PlacesRepositoryImpl @Inject constructor(
             } else {
                 "$category in $city"
             }
-
             val allPlaces = mutableListOf<Place>()
             var pageToken: String? = null
 

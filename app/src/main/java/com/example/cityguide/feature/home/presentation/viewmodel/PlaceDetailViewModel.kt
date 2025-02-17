@@ -37,9 +37,9 @@ class PlaceDetailViewModel
         val result = getPlaceDetailsUseCase(placeId)
         result.onSuccess {
             updateUiState(newUiState = UiState(it))
-            Log.d("PlaceDetailViewModel", "PlaceDetails: $it")
         }
         result.onFailure {
+            Log.d("PlaceDetailViewModel", "Error: ${it.message}")
         }
     }
 

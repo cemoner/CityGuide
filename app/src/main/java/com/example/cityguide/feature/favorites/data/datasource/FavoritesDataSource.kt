@@ -7,7 +7,6 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FavoritesDataSource @Inject constructor(private val firestore: FirebaseFirestore) {
-
     suspend fun addToFavorites(favoritePlace: FavoritePlace): Result<Unit> {
         return try {
             val favoritesRef = firestore.collection("favorites")
@@ -17,7 +16,6 @@ class FavoritesDataSource @Inject constructor(private val firestore: FirebaseFir
             Result.failure(e)
         }
     }
-
     suspend fun deleteFromFavorites(userId: String, placeId: String): Result<Unit> {
         return try {
             val favoritesRef = firestore.collection("favorites")
@@ -35,7 +33,6 @@ class FavoritesDataSource @Inject constructor(private val firestore: FirebaseFir
             Result.failure(e)
         }
     }
-
     suspend fun getFavorites(userId: String): Result<List<FavoritePlace>> {
         return try {
             val favoritesRef = firestore.collection("favorites")
